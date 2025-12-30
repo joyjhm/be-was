@@ -14,12 +14,12 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
     private final RequestParser requestParser;
-    private final Router router;
+    private final HttpRequestDispatcher httpRequestDispatcher;
 
-    public RequestHandler(Socket connectionSocket, RequestParser requestParser, Router router) {
+    public RequestHandler(Socket connectionSocket, RequestParser requestParser, HttpRequestDispatcher httpRequestDispatcher) {
         this.connection = connectionSocket;
         this.requestParser = requestParser;
-        this.router = router;
+        this.httpRequestDispatcher = httpRequestDispatcher;
     }
 
     public void run() {
@@ -32,7 +32,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(isr);
 
             HttpRequest httpRequest = requestParser.parseHttpRequest(br);
-            HttpResponse response = router.route(httpRequest.getStartLine().getTarget());
+            HttpResponse response = httpRequestDispatcher.dispatch(httpRequest);
 
             DataOutputStream dos = new DataOutputStream(out);
             dos.writeBytes(response.getResponseHead());

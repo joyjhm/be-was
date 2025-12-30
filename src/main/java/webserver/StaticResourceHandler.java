@@ -1,14 +1,28 @@
-package webserver.request;
+package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.request.HttpRequest;
+import webserver.response.HttpResponse;
+import webserver.response.HttpResponseBuilder;
 
 import java.io.*;
 
-public class StaticResourceHandler {
+public class StaticResourceHandler implements ResourceHandler {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
     private final static String ROOT_PATH = System.getProperty("user.dir");
     private final static String DEFAULT_STATIC_RESOURCE_PATH = "/src/main/resources/static";
+
+    @Override
+    public HttpResponse handle(HttpRequest httpRequest) {
+        byte[] resource = getResource(httpRequest.getStartLine().getTarget());
+        String contentType = getContentType(httpRequest.getStartLine().getTarget());
+        return new HttpResponseBuilder().statusLine(200)
+                .header("Content-Type", contentType)
+                .header("Content-Length", String.valueOf(resource.length))
+                .body(resource)
+                .build();
+    }
 
     public byte[] getResource(String path) {
         String filePath = ROOT_PATH + DEFAULT_STATIC_RESOURCE_PATH + path;

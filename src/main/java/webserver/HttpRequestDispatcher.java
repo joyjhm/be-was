@@ -1,20 +1,22 @@
 package webserver;
 
-import webserver.request.StaticResourceHandler;
+import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpResponseBuilder;
 import java.io.*;
 
-public class Router {
+public class HttpRequestDispatcher {
 
     private final StaticResourceHandler staticResourceHandler;
+    private final ActionRoutingHandler actionRoutingHandler;
 
-    public Router(StaticResourceHandler staticResourceHandler) {
+    public HttpRequestDispatcher(StaticResourceHandler staticResourceHandler, ActionRoutingHandler actionRoutingHandler) {
         this.staticResourceHandler = staticResourceHandler;
+        this.actionRoutingHandler = actionRoutingHandler;
     }
 
-    public HttpResponse route(String path) throws IOException {
-
+    public HttpResponse dispatch(HttpRequest httpRequest) throws IOException {
+        String path = httpRequest.getStartLine().getTarget();
         boolean isStatic = path.endsWith(".html")
                 || path.endsWith(".css")
                 || path.endsWith(".js")
@@ -24,13 +26,10 @@ public class Router {
                 || path.endsWith(".svg");
 
         if(isStatic) {
-            byte[] resource = staticResourceHandler.getResource(path);
-            String contentType = staticResourceHandler.getContentType(path);
-            return new HttpResponseBuilder().statusLine(200)
-                    .header("Content-Type", contentType)
-                    .header("Content-Length", String.valueOf(resource.length))
-                    .body(resource)
-                    .build();
+            return staticResourceHandler.handle(httpRequest);
+
+        } else {
+//            return actionRoutingHandler.handle(httpRequest);
         }
 
         byte[] body = "<h1>Hello World</h1>".getBytes();
