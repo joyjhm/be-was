@@ -1,11 +1,15 @@
 package webserver.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestParser {
+    private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
 
     public HttpRequest parseHttpRequest(BufferedReader br) throws IOException {
         // startLine 파싱
@@ -19,6 +23,8 @@ public class RequestParser {
     private HttpRequestStartLine parseStartLine(BufferedReader br) throws IOException {
         String startLine = br.readLine();
         String[] splitStartLine = startLine.split(" ");
+
+        logger.info("request method : {}, request path : {}", splitStartLine[0], splitStartLine[1]);
 
         return new HttpRequestStartLine(
                 splitStartLine[0], splitStartLine[1], splitStartLine[2]
