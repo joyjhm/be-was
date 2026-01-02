@@ -37,11 +37,16 @@ public class StaticResourceHandler implements ResourceHandler {
                 baos.write(buffer, 0, len);
             }
             return baos.toByteArray();
-        } catch (IOException e) {
+        }
+        catch (FileNotFoundException e) {
+            throw new NotFoundException("File not found");
+        }
+        catch (IOException e) {
             logger.error("static resource read error: {}", e.getMessage());
+            throw new InternalServerException("internal error");
         }
 
-        return null;
+
     }
 
     public String getContentType(String path) {
