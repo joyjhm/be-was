@@ -2,43 +2,35 @@ package webserver;
 
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
-import webserver.response.HttpResponseBuilder;
 import java.io.*;
 
 public class HttpRequestDispatcher {
 
     private final StaticResourceHandler staticResourceHandler;
-    private final ActionRoutingHandler actionRoutingHandler;
+    private final DynamicResourceHandler dynamicResourceHandler;
 
-    public HttpRequestDispatcher(StaticResourceHandler staticResourceHandler, ActionRoutingHandler actionRoutingHandler) {
+    public HttpRequestDispatcher(StaticResourceHandler staticResourceHandler, DynamicResourceHandler dynamicResourceHandler) {
         this.staticResourceHandler = staticResourceHandler;
-        this.actionRoutingHandler = actionRoutingHandler;
+        this.dynamicResourceHandler = dynamicResourceHandler;
     }
 
     public HttpResponse dispatch(HttpRequest httpRequest) throws IOException {
-        String path = httpRequest.getStartLine().getTarget();
+        String path = httpRequest.getStartLine().getRequestURL().getPath();
         boolean isStatic = path.endsWith(".html")
                 || path.endsWith(".css")
                 || path.endsWith(".js")
                 || path.endsWith(".ico")
                 || path.endsWith(".png")
                 || path.endsWith(".jpg")
-                || path.endsWith(".svg");
+                || path.endsWith(".svg")
+                || path.equals("/");
 
         if(isStatic) {
             return staticResourceHandler.handle(httpRequest);
-
-        } else {
-//            return actionRoutingHandler.handle(httpRequest);
         }
 
-        byte[] body = "<h1>Hello World</h1>".getBytes();
+        return dynamicResourceHandler.handle(httpRequest);
 
-        return new HttpResponseBuilder().statusLine(200)
-                .header("Content-Type", "text/html")
-                .header("Conte  nt-Length", String.valueOf(body.length))
-                .body(body)
-                .build();
     }
 
 }
