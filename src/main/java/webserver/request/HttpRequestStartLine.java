@@ -3,12 +3,12 @@ package webserver.request;
 public class HttpRequestStartLine {
 
     private final HttpMethod httpMethod;
-    private final String target;
+    private final RequestURL requestURL;
     private final String version;
 
-    HttpRequestStartLine(String method, String target, String version) {
+    HttpRequestStartLine(String method, RequestURL requestURL, String version) {
         this.httpMethod = HttpMethod.valueOf(method);
-        this.target = target;
+        this.requestURL = requestURL;
         this.version = version;
     }
 
@@ -16,8 +16,8 @@ public class HttpRequestStartLine {
         return httpMethod;
     }
 
-    public String getTarget() {
-        return target;
+    public RequestURL getRequestURL() {
+        return requestURL;
     }
 
     public String getVersion() {
