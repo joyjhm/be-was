@@ -2,17 +2,16 @@ package webserver.response;
 
 public class HttpResponseBuilder {
 
-
     HttpResponseStatusLine statusLine;
     HttpResponseHeader headers = new HttpResponseHeader();
     byte[] body;
 
-    public HttpResponseBuilder statusLine(int status) {
-        return statusLine("HTTP/1.1", status, "OK");
+    public HttpResponseBuilder statusLine(HttpStatus status) {
+        return statusLine("HTTP/1.1", status);
     }
 
-    public HttpResponseBuilder statusLine(String version, int status, String reason) {
-        this.statusLine = new HttpResponseStatusLine(version, status, reason);
+    public HttpResponseBuilder statusLine(String version, HttpStatus status) {
+        this.statusLine = new HttpResponseStatusLine(version, status.getCode(), status);
         return this;
     }
 

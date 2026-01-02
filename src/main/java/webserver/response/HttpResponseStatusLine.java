@@ -2,16 +2,16 @@ package webserver.response;
 
 public class HttpResponseStatusLine {
     String version;
-    int status;
-    String reason;
+    int code;
+    HttpStatus reason;
 
-    public HttpResponseStatusLine(String version, int status, String reason) {
+    public HttpResponseStatusLine(String version, int status, HttpStatus reason) {
         this.version = version;
-        this.status = status;
+        this.code = status;
         this.reason = reason;
     }
 
     public String getMessage() {
-        return String.format("%s %d %s\r\n", version, status, reason);
+        return String.format("%s %d %s\r\n", version, code, reason);
     }
 }
