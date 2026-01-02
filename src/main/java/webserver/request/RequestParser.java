@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +39,11 @@ public class RequestParser {
         String headerLine;
         Map<String, String> headers = new HashMap<>();
         while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
+            //TODO: Header Key Value 콜론 사이 공백 수정 - header-field = field-name ":" OWS field-value OWS
             String[] part = headerLine.split(": ");
+            //TODO: Index 1번이 없을 가능성 고려 - 방어 로직 구현 필요
             headers.put(part[0], part[1]);
         }
-
         return headers;
     }
 
