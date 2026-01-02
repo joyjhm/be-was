@@ -2,22 +2,26 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.InternalServerException;
+import webserver.exception.NotFoundException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpResponseBuilder;
+import webserver.response.HttpStatus;
 
 import java.io.*;
 
 public class StaticResourceHandler implements ResourceHandler {
+
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
-    private final static String ROOT_PATH = System.getProperty("user.dir");
-    private final static String DEFAULT_STATIC_RESOURCE_PATH = "/src/main/resources/static";
+    private final static String DEFAULT_STATIC_RESOURCE_PATH = "./src/main/resources/static";
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
-        byte[] resource = getResource(httpRequest.getStartLine().getTarget());
-        String contentType = getContentType(httpRequest.getStartLine().getTarget());
-        return new HttpResponseBuilder().statusLine(200)
+        String path = httpRequest.getStartLine().getRequestURL().getPath();
+        byte[] resource = getResource(path);
+        String contentType = getContentType(path);
+        return new HttpResponseBuilder().statusLine(HttpStatus.OK)
                 .header("Content-Type", contentType)
                 .header("Content-Length", String.valueOf(resource.length))
                 .body(resource)
@@ -25,10 +29,15 @@ public class StaticResourceHandler implements ResourceHandler {
     }
 
     public byte[] getResource(String path) {
-        String filePath = ROOT_PATH + DEFAULT_STATIC_RESOURCE_PATH + path;
+        String filePath;
+        if(path.equals("/")) {
+            filePath =  DEFAULT_STATIC_RESOURCE_PATH + "/index.html";
+        } else {
+            filePath = DEFAULT_STATIC_RESOURCE_PATH + path;
+        }
 
-        try (FileInputStream fis = new FileInputStream(filePath);
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try ( FileInputStream fis = new FileInputStream(filePath);
+              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             byte[] buffer = new byte[4096];
             int len;
