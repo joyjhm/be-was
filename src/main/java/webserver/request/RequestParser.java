@@ -27,7 +27,7 @@ public class RequestParser {
         logger.info("request method : {}, request path : {}", splitStartLine[0], splitStartLine[1]);
 
         return new HttpRequestStartLine(
-                splitStartLine[0], splitStartLine[1], splitStartLine[2]
+                splitStartLine[0], parseURL(splitStartLine[1]), splitStartLine[2]
         );
 
     }
@@ -57,5 +57,26 @@ public class RequestParser {
         }
         return sb.toString();
     }
+
+    private RequestURL parseURL(String url) {
+        String[] tokens = url.split("\\?", 2);
+        String path = tokens[0];
+
+        Map<String, String> params = new HashMap<>();
+
+        if (tokens.length > 1 && !tokens[1].isEmpty()) {
+            String query = tokens[1];
+
+            Arrays.stream(query.split("&"))
+                    .forEach(pair -> {
+                        String[] kv = pair.split("=", 2);
+                        String key = kv[0];
+                        String value = kv.length > 1 ? URLDecoder.decode(kv[1], StandardCharsets.UTF_8) : "";
+                        params.put(key, value);
+                    });
+        }
+        return new RequestURL(path, params);
+    }
+
 
 }
