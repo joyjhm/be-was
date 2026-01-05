@@ -1,4 +1,8 @@
-package webserver.response;
+package webserver.http.response;
+
+import webserver.http.HttpHeader;
+
+import java.nio.charset.StandardCharsets;
 
 public class HttpResponseBuilder {
 
@@ -15,13 +19,18 @@ public class HttpResponseBuilder {
         return this;
     }
 
-    public HttpResponseBuilder header(String name, String value) {
-        this.headers.put(name, value);
+    public HttpResponseBuilder header(HttpHeader name, String value) {
+        this.headers.put(name.getHeader(), value);
         return this;
     }
 
     public HttpResponseBuilder body(byte[] body) {
         this.body = body;
+        return this;
+    }
+
+    public HttpResponseBuilder body(String body) {
+        this.body = body.getBytes(StandardCharsets.UTF_8);
         return this;
     }
 

@@ -1,4 +1,4 @@
-package webserver.request;
+package webserver.http.request;
 
 import java.util.Map;
 
@@ -14,7 +14,9 @@ public class RequestURL {
     public String getPath() {
         return path;
     }
-    public Map<String, String> getParams() {
-        return params;
+
+    public String getParam(String parameterName) {
+        return params.get(parameterName);
     }
+
 }

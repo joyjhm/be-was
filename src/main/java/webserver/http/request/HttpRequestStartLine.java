@@ -1,4 +1,4 @@
-package webserver.request;
+package webserver.http.request;
 
 public class HttpRequestStartLine {
 
@@ -6,7 +6,7 @@ public class HttpRequestStartLine {
     private final RequestURL requestURL;
     private final String version;
 
-    HttpRequestStartLine(String method, RequestURL requestURL, String version) {
+    public HttpRequestStartLine(String method, RequestURL requestURL, String version) {
         this.httpMethod = HttpMethod.valueOf(method);
         this.requestURL = requestURL;
         this.version = version;
@@ -16,8 +16,12 @@ public class HttpRequestStartLine {
         return httpMethod;
     }
 
-    public RequestURL getRequestURL() {
-        return requestURL;
+    public String getParam(String parameterName) {
+        return requestURL.getParam(parameterName);
+    }
+
+    public String getPath() {
+        return requestURL.getPath();
     }
 
     public String getVersion() {

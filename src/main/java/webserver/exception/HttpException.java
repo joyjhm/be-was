@@ -1,6 +1,6 @@
 package webserver.exception;
 
-import webserver.response.HttpStatus;
+import webserver.http.response.HttpStatus;
 
 public abstract class HttpException extends RuntimeException {
 
