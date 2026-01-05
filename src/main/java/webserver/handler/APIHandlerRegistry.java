@@ -1,23 +1,21 @@
 package webserver.handler;
 
-import webserver.exception.NotFoundException;
+import application.UserCreateHandler;
+import webserver.http.request.HttpMethod;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class APIHandlerRegistry {
 
-    Map<String, APIHandler> handlerMap = new HashMap<>();
+    Map<RouteKey, APIHandler> handlerMap = new HashMap<>();
 
     public APIHandlerRegistry() {
-        handlerMap.put("/user/create", new UserCreateHandler());
+        handlerMap.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserCreateHandler());
     }
 
-    public APIHandler getHandlerMap(String path) {
-        APIHandler handler = handlerMap.get(path);
-        if(handler == null) {
-            throw new NotFoundException("api not found");
-        }
-        return handler;
+    public APIHandler getHandler(RouteKey routeKey) {
+        return handlerMap.get(routeKey);
     }
+
 }
