@@ -1,7 +1,8 @@
-package webserver.request;
+package webserver.http.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.BadRequestException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,27 +40,38 @@ public class RequestParser {
         String headerLine;
         Map<String, String> headers = new HashMap<>();
         while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
-            //TODO: Header Key Value 콜론 사이 공백 수정 - header-field = field-name ":" OWS field-value OWS
-            String[] part = headerLine.split(": ");
-            //TODO: Index 1번이 없을 가능성 고려 - 방어 로직 구현 필요
-            headers.put(part[0], part[1]);
+            int idx = headerLine.indexOf(':');
+
+            if(idx == -1) {
+                throw new BadRequestException("invalid header");
+            }
+
+            String key = headerLine.substring(0, idx).strip();
+            String value = headerLine.substring(idx + 1).strip();
+            headers.put(key.toLowerCase(), value);
         }
         return headers;
     }
 
     private String parseBody(BufferedReader br, Map<String,String> headers) throws IOException {
-        String cl = headers.get("Content-Length");
+        String cl = headers.get("content-length");
 
         if(cl == null) {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append('\n');
+        int contentLength = Integer.parseInt(cl);
+        char[] body = new char[contentLength];
+
+        int read = 0;
+        while (read < contentLength) {
+            int r = br.read(body, read, contentLength - read);
+            if (r == -1) {
+                break;
+            }
+            read += r;
         }
-        return sb.toString();
+        return new String(body);
     }
 
     private RequestURL parseURL(String url) {
