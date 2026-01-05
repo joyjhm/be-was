@@ -5,9 +5,9 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.request.HttpRequest;
-import webserver.request.RequestParser;
-import webserver.response.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.RequestParser;
+import webserver.http.response.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -27,7 +27,6 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             InputStreamReader isr  = new InputStreamReader(in, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
 
@@ -46,7 +45,9 @@ public class RequestHandler implements Runnable {
 
     private void responseBody(DataOutputStream dos, byte[] body) {
         try {
-            dos.write(body, 0, body.length);
+            if(body != null) {
+                dos.write(body, 0, body.length);
+            }
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
