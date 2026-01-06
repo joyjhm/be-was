@@ -1,5 +1,9 @@
 package webserver.http.request;
 
+import db.SessionStore;
+import webserver.http.HttpSession;
+import webserver.http.HttpHeader;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +50,24 @@ public class HttpRequest {
 
     public String getAttribute(String attributeName) {
         return attributes.get(attributeName);
+    }
+
+    //TODO Cookie 헤더 확인 및 파싱 부분 분리 필요
+    public HttpSession getSession() {
+        if(headers.containsKey(HttpHeader.COOKIE.getHeader())) {
+            String value = headers.get(HttpHeader.COOKIE.getHeader());
+            String[] token = value.split(";");
+            for (String s : token) {
+                String[] pair = s.split("=");
+                if(pair[0].equals("sid")) {
+                    if(pair.length == 2) {
+                        return SessionStore.getSession(pair[1]);
+                    }
+                }
+            }
+        }
+
+        return SessionStore.getSession();
     }
 
 }
