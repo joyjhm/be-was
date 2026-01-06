@@ -2,9 +2,9 @@ package webserver.convertor;
 
 import webserver.http.request.HttpRequest;
 
-public interface HttpMessageConvertor {
+public interface HttpMessageConvertor<T> {
 
-    boolean canConvert(HttpRequest httpRequest);
+    boolean canConvert(T httpMessage);
 
-    void convert(HttpRequest httpRequest);
+    void convert(T httpMessage);
 }

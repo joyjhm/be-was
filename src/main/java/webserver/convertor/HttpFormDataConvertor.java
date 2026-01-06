@@ -6,7 +6,7 @@ import webserver.http.request.HttpRequest;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-public class HttpFormDataConvertor implements HttpMessageConvertor {
+public class HttpFormDataConvertor implements HttpMessageConvertor<HttpRequest> {
 
     private static final String FORM_DATA_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
