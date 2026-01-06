@@ -22,7 +22,7 @@ public class StaticResourceHandler implements ResourceHandler {
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
         String path = httpRequest.getPath();
-        ResponseBody responseBody = resourceProvider.getResponseBody(path);
+        ResponseBody responseBody = resourceProvider.getResponseBody(path, new Model());
         return new HttpResponseBuilder().statusLine(HttpStatus.OK)
                 .header(HttpHeader.CONTENT_TYPE, responseBody.getContentType().getMimeType())
                 .header(HttpHeader.Content_LENGTH, String.valueOf(responseBody.getContentLength()))

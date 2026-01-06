@@ -35,7 +35,7 @@ public class UserCreateHandler implements APIHandler {
 
         return new HttpResponseBuilder().
                 statusLine(HttpStatus.FOUND).
-                header(HttpHeader.LOCATION,  "/index.html").
+                header(HttpHeader.LOCATION,  "/").
                 build();
     }
 }
