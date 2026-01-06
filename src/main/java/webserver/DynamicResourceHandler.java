@@ -56,8 +56,10 @@ public class DynamicResourceHandler implements ResourceHandler {
 
         ViewHandler viewHandler = viewHandlerRegistry.getHandler(new RouteKey(httpRequest.getMethod(), path));
         if (httpRequest.getMethod() == HttpMethod.GET && viewHandler != null) {
-            String filepath = viewHandler.handle(httpRequest);
-            ResponseBody body = resourceProvider.getResponseBody(filepath);
+            Model model = new Model();
+            String filepath = viewHandler.handle(httpRequest, model);
+            ResponseBody body = resourceProvider.getResponseBody(filepath, model);
+
             return new HttpResponseBuilder().statusLine(HttpStatus.OK)
                     .header(HttpHeader.CONTENT_TYPE, body.getContentType().getMimeType())
                     .header(HttpHeader.Content_LENGTH, String.valueOf(body.getContentLength()))
