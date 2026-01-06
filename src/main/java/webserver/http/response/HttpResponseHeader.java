@@ -14,7 +14,7 @@ public class HttpResponseHeader {
         return sb.toString();
     }
 
-    public void put(String key, String value) {
+    public void setHeader(String key, String value) {
         this.headers.put(key, value);
     }
 }

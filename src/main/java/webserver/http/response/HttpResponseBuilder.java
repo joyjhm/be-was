@@ -1,5 +1,6 @@
 package webserver.http.response;
 
+import webserver.http.Cookie;
 import webserver.http.HttpHeader;
 
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,12 @@ public class HttpResponseBuilder {
     }
 
     public HttpResponseBuilder header(HttpHeader name, String value) {
-        this.headers.put(name.getHeader(), value);
+        this.headers.setHeader(name.getHeader(), value);
+        return this;
+    }
+
+    public HttpResponseBuilder setCookie(Cookie cookie) {
+        this.headers.setHeader(HttpHeader.SET_COOKIE.getHeader(), cookie.toString());
         return this;
     }
 
