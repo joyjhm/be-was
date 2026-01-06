@@ -1,6 +1,8 @@
 package webserver.handler;
 
+import application.view.LoginPageHandler;
 import application.view.MainPageHandler;
+import application.view.MyPageHandler;
 import application.view.RegistrationPageHandler;
 import webserver.http.request.HttpMethod;
 
@@ -13,6 +15,8 @@ public class ViewHandlerRegistry {
     public ViewHandlerRegistry() {
         handlerMap.put(new RouteKey(HttpMethod.GET, "/"), new MainPageHandler());
         handlerMap.put(new RouteKey(HttpMethod.GET,"/registration"), new RegistrationPageHandler());
+        handlerMap.put(new RouteKey(HttpMethod.GET,"/login"), new LoginPageHandler());
+        handlerMap.put(new RouteKey(HttpMethod.GET,"/mypage"), new MyPageHandler());
     }
 
     public ViewHandler getHandler(RouteKey routeKey) {
