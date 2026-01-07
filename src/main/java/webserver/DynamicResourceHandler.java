@@ -2,8 +2,6 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.convertor.ConvertorRegistry;
-import webserver.convertor.HttpMessageConvertor;
 import webserver.exception.NotFoundException;
 import webserver.handler.*;
 import webserver.http.HttpHeader;
@@ -22,32 +20,21 @@ public class DynamicResourceHandler implements ResourceHandler {
     private final APIHandlerRegistry apiHandlerRegistry;
     private final ViewHandlerRegistry viewHandlerRegistry;
     private final ResourceProvider resourceProvider;
-    private final ConvertorRegistry convertorRegistry;
 
     public DynamicResourceHandler(
             APIHandlerRegistry apiHandlerRegistry,
             ViewHandlerRegistry viewHandlerRegistry,
-            ResourceProvider resourceProvider,
-            ConvertorRegistry convertorRegistry
+            ResourceProvider resourceProvider
     ) {
         this.apiHandlerRegistry = apiHandlerRegistry;
         this.viewHandlerRegistry = viewHandlerRegistry;
         this.resourceProvider = resourceProvider;
-        this.convertorRegistry = convertorRegistry;
     }
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
 
         String path = httpRequest.getPath();
-
-        // TODO: Convertor 순회하며 가능한 타입은 변환 시키기, Request 뿐만 아니라 Response도 적용
-
-        for (HttpMessageConvertor messageConvertor: convertorRegistry.getHttpMessageConvertors()) {
-            if (messageConvertor.canConvert(httpRequest)) {
-                messageConvertor.convert(httpRequest);
-            }
-        }
 
         APIHandler apiHandler = apiHandlerRegistry.getHandler(new RouteKey(httpRequest.getMethod(), path));
         if (apiHandler != null) {
@@ -66,6 +53,7 @@ public class DynamicResourceHandler implements ResourceHandler {
                     .body(body.getContent())
                     .build();
         }
+
         logger.error("not found dynamic resource path: {}", path);
         throw new NotFoundException("not found dynamic resource");
     }
