@@ -13,6 +13,8 @@ public class HttpRequest {
     private final Map<String, String> headers;
     private final String body;
     private final Map<String, String> attributes = new HashMap<>();
+    private HttpSession session;
+
 
     HttpRequest(HttpRequestStartLine startLine, Map<String, String> headers, String body) {
         this.startLine = startLine;
@@ -52,22 +54,15 @@ public class HttpRequest {
         return attributes.get(attributeName);
     }
 
-    //TODO Cookie 헤더 확인 및 파싱 부분 분리 필요
     public HttpSession getSession() {
-        if(headers.containsKey(HttpHeader.COOKIE.getHeader())) {
-            String value = headers.get(HttpHeader.COOKIE.getHeader());
-            String[] token = value.split(";");
-            for (String s : token) {
-                String[] pair = s.split("=");
-                if(pair[0].equals("sid")) {
-                    if(pair.length == 2) {
-                        return SessionStore.getSession(pair[1]);
-                    }
-                }
-            }
-        }
+        return session;
+    }
 
+    public HttpSession createSession() {
         return SessionStore.getSession();
     }
 
+    public void setSession(String key) {
+        session = SessionStore.getSession(key);
+    }
 }
