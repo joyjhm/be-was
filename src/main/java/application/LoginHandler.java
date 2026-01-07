@@ -31,13 +31,11 @@ public class LoginHandler implements APIHandler {
             throw new AuthorizationException("Wrong password");
         }
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.createSession();
 
         session.setAttribute("userId", user.getUserId());
         session.setAttribute("name", user.getName());
         session.setAttribute("email", user.getEmail());
-
-        logger.info("sessionId: {}", session.getSid());
 
         logger.info("session data: userId={}, name={}, email={}",
                 session.getAttribute("userId"),
@@ -46,9 +44,8 @@ public class LoginHandler implements APIHandler {
         );
 
         return new HttpResponseBuilder().statusLine(HttpStatus.FOUND)
-                .setCookie(new Cookie(session.getSid()))
+                .setCookie(new Cookie(session.getKey()))
                 .header(HttpHeader.LOCATION,  "/")
                 .build();
-
     }
 }
