@@ -1,17 +1,19 @@
 package webserver.convertor;
 
+import webserver.http.request.HttpRequest;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class ConvertorRegistry {
 
-    List<HttpMessageConvertor> httpMessageConvertors = new LinkedList<HttpMessageConvertor>();
+    List<HttpMessageConvertor<HttpRequest>> httpMessageRequestConverters = new LinkedList<>();
 
     public ConvertorRegistry() {
-        httpMessageConvertors.add(new HttpFormDataConvertor());
+        httpMessageRequestConverters.add(new HttpFormDataConvertor());
     }
 
-    public List<HttpMessageConvertor> getHttpMessageConvertors() {
-        return httpMessageConvertors;
+    public List<HttpMessageConvertor<HttpRequest>> getHttpMessageRequestConverters() {
+        return httpMessageRequestConverters;
     }
 }
