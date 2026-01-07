@@ -8,10 +8,10 @@ import java.util.Map;
 public class HttpSession {
 
     Map<String, Object> sessionData = new HashMap<String, Object>();
-    String sid;
+    String key;
 
-    public HttpSession(String sid){
-        this.sid = sid;
+    public HttpSession(String key){
+        this.key = key;
     }
 
     public Object getAttribute(String key) {
@@ -22,11 +22,11 @@ public class HttpSession {
         sessionData.put(key, value);
     }
 
-    public String getSid() {
-        return sid;
+    public String getKey() {
+        return key;
     }
 
     public void invalidate() {
-        SessionStore.removeSession(sid);
+        SessionStore.removeSession(key);
     }
 }
