@@ -9,11 +9,10 @@ import java.util.UUID;
 public class SessionStore {
     private static Map<String, HttpSession> sessions = new HashMap<>();
 
-
-    public static HttpSession addSession() {
-        String sid = UUID.randomUUID().toString();
-        HttpSession session = new HttpSession(sid);
-        sessions.put(sid, session);
+    private static HttpSession addSession() {
+        String key = UUID.randomUUID().toString();
+        HttpSession session = new HttpSession(key);
+        sessions.put(key, session);
         return session;
     }
 
@@ -21,11 +20,11 @@ public class SessionStore {
         return addSession();
     }
 
-    public static HttpSession getSession(String sid) {
-        return sessions.get(sid);
+    public static HttpSession getSession(String key) {
+        return sessions.get(key);
     }
 
-    public static void removeSession(String sid) {
-        sessions.remove(sid);
+    public static void removeSession(String key) {
+        sessions.remove(key);
     }
 }
