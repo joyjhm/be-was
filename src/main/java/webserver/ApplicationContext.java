@@ -1,10 +1,11 @@
 package webserver;
 
 import webserver.convertor.ConvertorRegistry;
-import webserver.exception.HttpExceptionHandler;
+import webserver.exception.ExceptionHandler;
 import webserver.handler.APIHandlerRegistry;
 import webserver.handler.ViewHandlerRegistry;
 import webserver.http.request.RequestParser;
+import webserver.resolver.ResolverRegistry;
 
 public class ApplicationContext {
 
@@ -20,24 +21,29 @@ public class ApplicationContext {
 
         APIHandlerRegistry apiHandlerRegistry = new APIHandlerRegistry();
         ViewHandlerRegistry viewHandlerRegistry = new ViewHandlerRegistry();
-        ConvertorRegistry convertorRegistry = new ConvertorRegistry();
+
 
         DynamicResourceHandler dynamicResourceHandler =
                 new DynamicResourceHandler(
                         apiHandlerRegistry,
                         viewHandlerRegistry,
-                        resourceProvider,
-                        convertorRegistry
+                        resourceProvider
                 );
 
-        HttpExceptionHandler httpExceptionHandler = new HttpExceptionHandler();
+        ExceptionHandler exceptionHandler = new ExceptionHandler();
+
+
+        ResolverRegistry resolverRegistry = new ResolverRegistry();
+        ConvertorRegistry convertorRegistry = new ConvertorRegistry();
 
         this.requestParser = requestParser;
         this.dispatcher =
                 new HttpRequestDispatcher(
                         staticResourceHandler,
                         dynamicResourceHandler,
-                        httpExceptionHandler
+                        exceptionHandler,
+                        resolverRegistry,
+                        convertorRegistry
                 );
     }
 
