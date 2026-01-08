@@ -32,17 +32,23 @@ public class ResourceProvider {
             }
 
             if(contentType.get().equals(ContentType.HTML)) {
-                String stringBody = new String(content, StandardCharsets.UTF_8);
+                StringBuilder sb = new StringBuilder(new String(content, StandardCharsets.UTF_8));
 
                 for (Map.Entry<String, String> entry : model.getAttributes().entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue();
+                    String placeholder = "{{" + key + "}}";
 
-                    if(stringBody.contains(String.format("{{%s}}", key))){
-                        stringBody = stringBody.replace(String.format("{{%s}}", key), value);
+                    int fromIndex = 0;
+                    int idx;
+
+                    while ((idx = sb.indexOf(placeholder, fromIndex)) != -1) {
+                        sb.replace(idx, idx + placeholder.length(), value);
+                        fromIndex = idx + value.length();
                     }
                 }
-                byte[] body = stringBody.getBytes(StandardCharsets.UTF_8);
+
+                byte[] body = sb.toString().getBytes(StandardCharsets.UTF_8);
                 return new ResponseBody(body, ContentType.HTML, body.length);
             }
 
