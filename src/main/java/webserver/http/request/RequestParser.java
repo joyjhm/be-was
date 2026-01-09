@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import webserver.http.HttpHeader;
 
 public class RequestParser {
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
@@ -54,7 +55,8 @@ public class RequestParser {
     }
 
     private String parseBody(BufferedReader br, Map<String,String> headers) throws IOException {
-        String cl = headers.get("content-length");
+        //TODO: Content-Length 없을 경우 고려
+        String cl = headers.get(HttpHeader.Content_LENGTH.getHeader());
 
         if(cl == null) {
             return null;

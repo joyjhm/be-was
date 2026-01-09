@@ -1,4 +1,4 @@
-package webserver.http.response;
+package webserver.http;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.Optional;
 public enum ContentType {
 
     HTML(Collections.singletonList("html"), "text/html;charset=utf-8"),
-    CSS(Collections.singletonList("css"),"text/css;charset=utf-8"),
+    CSS(Collections.singletonList("css"), "text/css;charset=utf-8"),
     JS(Collections.singletonList("js"), "application/javascript;charset=utf-8"),
     ICO(Collections.singletonList("ico"), "image/x-icon"),
     PNG(Collections.singletonList("png"), "image/png"),
     JPG(Collections.singletonList("jpg, jpeg"), "image/jpeg"),
     SVG(Collections.singletonList("svg"), "image/svg+xml"),
     JSON(Collections.singletonList("json"), "application/json;charset=utf-8");
-    
+
 
     private final List<String> extensions;
     private final String mimeType;
@@ -41,6 +41,13 @@ public enum ContentType {
             }
         }
         return Optional.empty();
+    }
+
+    public static boolean isStaticResource(String path) {
+        ContentType contentType = ContentType.mimeTypeOfPath(path).orElse(null);
+        return contentType == HTML ||
+                contentType == CSS || contentType == JS || contentType == ICO || contentType == PNG
+                || contentType == JPG || contentType == SVG;
     }
 
     public String getMimeType() {

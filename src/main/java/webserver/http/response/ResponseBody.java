@@ -1,5 +1,7 @@
 package webserver.http.response;
 
+import webserver.http.ContentType;
+
 public class ResponseBody {
 
     byte[] content;

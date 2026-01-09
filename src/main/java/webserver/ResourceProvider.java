@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import webserver.exception.BadRequestException;
 import webserver.exception.InternalServerException;
 import webserver.exception.NotFoundException;
-import webserver.http.response.ContentType;
+import webserver.http.ContentType;
 import webserver.http.response.ResponseBody;
 import webserver.util.FileUtils;
 

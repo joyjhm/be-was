@@ -4,6 +4,7 @@ import webserver.convertor.ConvertorRegistry;
 import webserver.convertor.HttpMessageConvertor;
 import webserver.exception.HttpException;
 import webserver.exception.ExceptionHandler;
+import webserver.http.ContentType;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.resolver.HttpResolver;
@@ -33,13 +34,7 @@ public class HttpRequestDispatcher {
 
     public HttpResponse dispatch(HttpRequest httpRequest) {
         String path = httpRequest.getPath();
-        boolean isStatic = path.endsWith(".html")
-                || path.endsWith(".css")
-                || path.endsWith(".js")
-                || path.endsWith(".ico")
-                || path.endsWith(".png")
-                || path.endsWith(".jpg")
-                || path.endsWith(".svg");
+        boolean isStatic = ContentType.isStaticResource(path);
 
         try {
             for (HttpResolver httpResolver: resolverRegistry.getHttpResolvers()) {

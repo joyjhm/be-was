@@ -2,7 +2,7 @@ package webserver.exception;
 
 import webserver.http.HttpHeader;
 import webserver.http.request.HttpRequest;
-import webserver.http.response.ContentType;
+import webserver.http.ContentType;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpResponseBuilder;
 import webserver.http.response.HttpStatus;
