@@ -3,6 +3,7 @@ package webserver.handler;
 import application.LoginHandler;
 import application.LogoutHandler;
 import application.UserCreateHandler;
+import db.UserDatabase;
 import webserver.http.request.HttpMethod;
 
 import java.util.HashMap;
@@ -12,9 +13,9 @@ public class APIHandlerRegistry {
 
     Map<RouteKey, APIHandler> handlerMap = new HashMap<>();
 
-    public APIHandlerRegistry() {
-        handlerMap.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserCreateHandler());
-        handlerMap.put(new RouteKey(HttpMethod.POST, "/login"), new LoginHandler());
+    public APIHandlerRegistry(UserDatabase userDatabase) {
+        handlerMap.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserCreateHandler(userDatabase));
+        handlerMap.put(new RouteKey(HttpMethod.POST, "/login"), new LoginHandler(userDatabase));
         handlerMap.put(new RouteKey(HttpMethod.POST, "/logout"), new LogoutHandler());
     }
 

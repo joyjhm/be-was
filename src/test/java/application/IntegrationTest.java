@@ -1,8 +1,8 @@
 package application;
 
-import db.Database;
+import db.UserDatabase;
+import db.UserMemoryDatabase;
 import model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +32,7 @@ public class IntegrationTest {
         }).start();
     }
 
-//    @AfterEach
-//    void clear() {
-//        Database.clear();  // static 컬렉션 비우기
-//    }
+    UserDatabase userDatabase = new UserMemoryDatabase();
 
 
     @Test
@@ -73,14 +70,14 @@ public class IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FOUND.getCode());
         assertThat(response.headers().firstValue("Location").get()).isEqualTo("/");
         assertThat(response.uri()).isEqualTo(new URI("http://localhost:8080/user/create"));
-        assertThat(Database.findUserById("test")).isNotNull();
+        assertThat(userDatabase.findUserById("test")).isNotNull();
     }
 
     @Test
     @DisplayName("로그인")
     public void loginTest() throws Exception {
         User user = new User("test", "1234", "test", "test@example.com");
-        Database.addUser(user);
+        userDatabase.addUser(user);
 
         String body = "userId=test&password=1234";
 
@@ -103,7 +100,7 @@ public class IntegrationTest {
     @DisplayName("로그아웃")
     public void logoutTest() throws Exception {
         User user = new User("test", "1234", "test", "test@example.com");
-        Database.addUser(user);
+        userDatabase.addUser(user);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
