@@ -1,6 +1,6 @@
 package application;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,25 +17,29 @@ import webserver.http.response.HttpStatus;
 public class LoginHandler implements APIHandler {
     private static final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
+    private final UserDatabase userDatabase;
+
+    public LoginHandler(UserDatabase userDatabase) {
+        this.userDatabase = userDatabase;
+    }
+
     @Override
     public HttpResponse handle(HttpRequest request) {
         String userId = request.getAttribute("userId");
-        User user = Database.findUserById(userId);
 
-        if(user == null) {
-            throw new AuthorizationException("User not found");
-        }
+        User user = userDatabase.findUserById(userId)
+                .orElseThrow(() -> new AuthorizationException("User not found"));
 
         String password = request.getAttribute("password");
-        if (!user.getPassword().equals(password)) {
+        if (!user.password().equals(password)) {
             throw new AuthorizationException("Wrong password");
         }
 
         HttpSession session = request.createSession();
 
-        session.setAttribute("userId", user.getUserId());
-        session.setAttribute("name", user.getName());
-        session.setAttribute("email", user.getEmail());
+        session.setAttribute("userId", user.userId());
+        session.setAttribute("name", user.name());
+        session.setAttribute("email", user.email());
 
         logger.info("session data: userId={}, name={}, email={}",
                 session.getAttribute("userId"),
