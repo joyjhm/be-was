@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../reset.css" rel="stylesheet" />
+    <link href="../global.css" rel="stylesheet" />
+    <title>401 Unauthorized</title>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <a href="/"><img src="../img/signiture.svg" /></a>
+        <ul class="header__menu">
+            <li class="header__menu__item">
+                <a class="btn btn_contained btn_size_s" href="/login">로그인</a>
+            </li>
+            <li class="header__menu__item">
+                <a class="btn btn_ghost btn_size_s" href="/registration">회원 가입</a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="page" style="text-align: center;">
+        <h1 style="font-size: 64px; margin-bottom: 16px;">401</h1>
+        <h2 class="page-title">인증에 실패했습니다</h2>
+
+        <p style="margin-top: 12px; color: #666;">
+            로그인 정보가 없거나 올바르지 않습니다.<br />
+            다시 시도해주세요.
+        </p>
+
+        <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: center;">
+            <a href="/login" class="btn btn_contained btn_size_m">로그인</a>
+            <a href="/" class="btn btn_ghost btn_size_m">홈으로</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
