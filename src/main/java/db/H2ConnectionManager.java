@@ -25,20 +25,19 @@ public class H2ConnectionManager implements ConnectionManager {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement()) {
 
-            // 1. 테이블 생성
             stmt.execute("""
                         CREATE TABLE IF NOT EXISTS USERS (
                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                            userId VARCHAR(255) NOT NULL UNIQUE,
-                            password VARCHAR(255) NOT NULL,
+                            user_id VARCHAR(255) NOT NULL UNIQUE,
+                            email VARCHAR(255) NOT NULL,
                             name VARCHAR(255) NOT NULL,
-                            email VARCHAR(255) NOT NULL
+                            password VARCHAR(255) NOT NULL
                         )
                     """);
 
             stmt.execute("""
-                        CREATE TABLE IF NOT EXISTS POSTS (
-                            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        CREATE TABLE IF NOT EXISTS BOARDS (
+                            board_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                             user_id BIGINT NOT NULL,
                             content VARCHAR(500) NOT NULL,
                             image_url VARCHAR(255),
@@ -49,10 +48,14 @@ public class H2ConnectionManager implements ConnectionManager {
                         )
                     """);
 
-            // 2. 기본 데이터 insert
             stmt.execute("""
-                INSERT INTO USERS (userId, password, name, email)
+                INSERT INTO USERS (user_id, password, name, email)
                 VALUES ('test', '1234', 'test', 'test@example.com')
+            """);
+
+            stmt.execute("""
+                INSERT INTO BOARDS (user_id, content)
+                VALUES (1,  '테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다.')
             """);
 
             logger.info("H2 schema initialized");
