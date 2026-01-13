@@ -1,7 +1,11 @@
 package webserver;
 
+import db.BoardDatabase;
+import db.BoardH2Database;
 import db.ConnectionManager;
 import db.H2ConnectionManager;
+import db.JdbcTemplate;
+import db.UserDatabase;
 import db.UserH2Database;
 import webserver.convertor.ConvertorRegistry;
 import webserver.exception.ExceptionHandler;
@@ -23,11 +27,15 @@ public class ApplicationContext {
                 new StaticResourceHandler(resourceProvider);
 
 
-        ViewHandlerRegistry viewHandlerRegistry = new ViewHandlerRegistry();
-
         ConnectionManager connectionManager = new H2ConnectionManager();
 
-        APIHandlerRegistry apiHandlerRegistry = new APIHandlerRegistry(new UserH2Database(connectionManager));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(connectionManager);
+
+        UserDatabase userDatabase = new UserH2Database(jdbcTemplate);
+        BoardDatabase boardDatabase = new BoardH2Database(jdbcTemplate);
+
+        ViewHandlerRegistry viewHandlerRegistry = new ViewHandlerRegistry(userDatabase, boardDatabase);
+        APIHandlerRegistry apiHandlerRegistry = new APIHandlerRegistry(userDatabase, boardDatabase);
 
         DynamicResourceHandler dynamicResourceHandler =
                 new DynamicResourceHandler(
