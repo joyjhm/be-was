@@ -2,7 +2,9 @@ package webserver.handler;
 
 import application.LoginHandler;
 import application.LogoutHandler;
+import application.PostHandler;
 import application.UserCreateHandler;
+import db.BoardDatabase;
 import db.UserDatabase;
 import webserver.http.request.HttpMethod;
 
@@ -13,10 +15,11 @@ public class APIHandlerRegistry {
 
     Map<RouteKey, APIHandler> handlerMap = new HashMap<>();
 
-    public APIHandlerRegistry(UserDatabase userDatabase) {
+    public APIHandlerRegistry(UserDatabase userDatabase, BoardDatabase boardDatabase) {
         handlerMap.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserCreateHandler(userDatabase));
         handlerMap.put(new RouteKey(HttpMethod.POST, "/login"), new LoginHandler(userDatabase));
         handlerMap.put(new RouteKey(HttpMethod.POST, "/logout"), new LogoutHandler());
+        handlerMap.put(new RouteKey(HttpMethod.POST, "/post"), new PostHandler(boardDatabase));
     }
 
     public APIHandler getHandler(RouteKey routeKey) {
