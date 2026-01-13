@@ -16,66 +16,39 @@ import org.slf4j.LoggerFactory;
 public class UserH2Database implements UserDatabase {
     private static final Logger logger = LoggerFactory.getLogger(UserH2Database.class);
 
-    private final ConnectionManager connectionManager;
+    private final JdbcTemplate jdbcTemplate;
+    private final UserMapper userMapper = new UserMapper();
 
-    public UserH2Database(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+    public UserH2Database(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void addUser(User user) {
         String sql = """
-                    INSERT INTO USERS (userId, password, name, email)
+                    INSERT INTO USERS (user_id, password, name, email)
                     VALUES (?, ?, ?, ?)
                 """;
 
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.userId());
-            ps.setString(2, user.password());
-            ps.setString(3, user.name());
-            ps.setString(4, user.email());
-            int rows = ps.executeUpdate();
-
-
-            logger.info("add count: {}, User {} has been added", rows, user.userId());
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        jdbcTemplate.executeUpdate(sql, user.userId(), user.password(), user.name(), user.email());
     }
 
     @Override
-    public Optional<User> findUserById(String userId) {
+    public Optional<User> findUserByUserId(String userId) {
         String sql = """
-                    SELECT * FROM USERS WHERE userId = ?;
+                    SELECT * FROM USERS WHERE user_id = ?;
                 """;
 
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, userId);
+        return jdbcTemplate.executeQueryOne(sql, userMapper, userId);
+    }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) {
-                    return Optional.empty();
-                }
+    @Override
+    public Optional<User> findUserById(Long id) {
+        String sql = """
+                    SELECT * FROM USERS WHERE id = ?;
+                """;
 
-                User findUser = new User(
-                        rs.getLong("id"),
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                );
-
-                logger.info("find User: {}", findUser);
-                return Optional.of(findUser);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.executeQueryOne(sql, userMapper, id);
     }
 
     @Override
@@ -84,27 +57,7 @@ public class UserH2Database implements UserDatabase {
                     SELECT * FROM USERS;
                 """;
 
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ResultSet rs = ps.executeQuery();
-
-            List<User> users = new ArrayList<>();
-
-            while (rs.next()) {
-                User findUser = new User(
-                        rs.getLong("id"),
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                );
-                users.add(findUser);
-            }
-            return users;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcTemplate.executeQueryList(sql, new UserMapper());
     }
 
     @Override
