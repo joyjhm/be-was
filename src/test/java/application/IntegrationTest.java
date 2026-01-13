@@ -17,6 +17,7 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.*;
 
+//TODO: 테스트 코드 수정 필요
 public class IntegrationTest {
 
     @BeforeAll
@@ -70,13 +71,13 @@ public class IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FOUND.getCode());
         assertThat(response.headers().firstValue("Location").get()).isEqualTo("/");
         assertThat(response.uri()).isEqualTo(new URI("http://localhost:8080/user/create"));
-        assertThat(userDatabase.findUserById("test")).isNotNull();
+        assertThat(userDatabase.findUserByUserId("test")).isNotNull();
     }
 
     @Test
     @DisplayName("로그인")
     public void loginTest() throws Exception {
-        User user = new User("test", "1234", "test", "test@example.com");
+        User user = new User("1", "1234", "test", "test@example.com");
         userDatabase.addUser(user);
 
         String body = "userId=test&password=1234";
