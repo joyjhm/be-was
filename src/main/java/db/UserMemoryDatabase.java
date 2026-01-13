@@ -8,20 +8,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserMemoryDatabase implements UserDatabase {
-    private static Map<String, User> users = new HashMap<>();
+    private static Map<Long, User> users = new HashMap<>();
 
+    @Override
     public void addUser(User user) {
-        users.put(user.userId(), user);
+        users.put(user.id(), user);
     }
 
-    public Optional<User> findUserById(String userId) {
-        return Optional.of(users.get(userId));
+    @Override
+    public Optional<User> findUserByUserId(String userId) {
+        return users.values().stream()
+                .filter(user -> user.userId().equals(userId))
+                .findFirst();
     }
 
+    @Override
+    public Optional<User> findUserById(Long id) {
+        return Optional.of(users.get(id));
+    }
+
+    @Override
     public Collection<User> findAll() {
         return users.values();
     }
 
+    @Override
     public void clear() {
         users.clear();
     }
