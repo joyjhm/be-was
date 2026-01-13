@@ -27,7 +27,7 @@ public class LoginHandler implements APIHandler {
     public HttpResponse handle(HttpRequest request) {
         String userId = request.getAttribute("userId");
 
-        User user = userDatabase.findUserById(userId)
+        User user = userDatabase.findUserByUserId(userId)
                 .orElseThrow(() -> new AuthorizationException("User not found"));
 
         String password = request.getAttribute("password");
@@ -37,11 +37,13 @@ public class LoginHandler implements APIHandler {
 
         HttpSession session = request.createSession();
 
+        session.setAttribute("id", user.id());
         session.setAttribute("userId", user.userId());
         session.setAttribute("name", user.name());
         session.setAttribute("email", user.email());
 
-        logger.info("session data: userId={}, name={}, email={}",
+        logger.info("session data: id={}, userId={}, name={}, email={}",
+                session.getAttribute("id"),
                 session.getAttribute("userId"),
                 session.getAttribute("name"),
                 session.getAttribute("email")
