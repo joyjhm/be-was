@@ -5,6 +5,8 @@ import db.UserDatabase;
 import model.Board;
 import model.Page;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.Model;
 import webserver.exception.InternalServerException;
 import webserver.handler.ViewHandler;
@@ -13,6 +15,7 @@ import webserver.http.request.HttpRequest;
 
 public class MainPageHandler implements ViewHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(MainPageHandler.class);
     private static final String MAIN_PAGE_PATH = "/index.html";
     private static final String LOGGED_IN_MAIN_PAGE_PATH = "/main/index.html";
 
@@ -33,10 +36,13 @@ public class MainPageHandler implements ViewHandler {
 
         User user = userDatabase.findUserById(board.userId()).orElseThrow(() -> new InternalServerException("User not found"));
 
+        logger.info("board: {}", board);
+
         model.setAttribute("content", board.content());
         model.setAttribute("writer", user.name());
         model.setAttribute("previousPage", String.valueOf(1));
         model.setAttribute("nextPage", boardPage.hasNext() ? "2" : "1");
+        model.setAttribute("boardImage", board.imagePath());
 
         if (session == null) {
             return MAIN_PAGE_PATH;

@@ -25,12 +25,13 @@ public class LoginHandler implements APIHandler {
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        String userId = request.getAttribute("userId");
+        String userId = (String) request.getAttribute("userId");
 
         User user = userDatabase.findUserByUserId(userId)
                 .orElseThrow(() -> new AuthorizationException("User not found"));
 
-        String password = request.getAttribute("password");
+        String password = (String) request.getAttribute("password");
+
         if (!user.password().equals(password)) {
             throw new AuthorizationException("Wrong password");
         }
@@ -51,7 +52,7 @@ public class LoginHandler implements APIHandler {
 
         return new HttpResponseBuilder().statusLine(HttpStatus.FOUND)
                 .setCookie(new Cookie(session.getKey()))
-                .header(HttpHeader.LOCATION,  "/")
+                .header(HttpHeader.LOCATION, "/")
                 .build();
     }
 }

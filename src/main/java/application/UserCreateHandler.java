@@ -24,10 +24,10 @@ public class UserCreateHandler implements APIHandler {
 
     public HttpResponse handle(HttpRequest request) {
 
-        String userId = request.getAttribute("userId");
-        String password = request.getAttribute("password");
-        String name = request.getAttribute("name");
-        String email = request.getAttribute("email");
+        String userId = (String) request.getAttribute("userId");
+        String password = (String) request.getAttribute("password");
+        String name = (String) request.getAttribute("name");
+        String email = (String) request.getAttribute("email");
 
         if (userId.isBlank() || password.isBlank() || name.isBlank() || email.isBlank()) {
             throw new BadRequestException("Required fields are missing.");
