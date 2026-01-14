@@ -11,6 +11,7 @@ public class ConvertorRegistry {
 
     public ConvertorRegistry() {
         httpMessageRequestConverters.add(new HttpFormDataConvertor());
+        httpMessageRequestConverters.add(new MultipartFormDataConvertor());
     }
 
     public List<HttpMessageConvertor<HttpRequest>> getHttpMessageRequestConverters() {
