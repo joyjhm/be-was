@@ -22,11 +22,11 @@ public class BoardH2Database implements BoardDatabase {
     @Override
     public void addBoard(Board board) {
         String sql = """
-                    INSERT INTO BOARDS (user_id, content)
-                    VALUES (?, ?)
+                    INSERT INTO BOARDS (user_id, content, image_url)
+                    VALUES (?, ?, ?)
                 """;
 
-        jdbcTemplate.executeUpdate(sql, board.userId(), board.content());
+        jdbcTemplate.executeUpdate(sql, board.userId(), board.content(), board.imagePath());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BoardH2Database implements BoardDatabase {
                     LIMIT ? OFFSET ?;
         """;
 
-        List<Board> boards = jdbcTemplate.executeQueryList(sql, boardMapper, page, offset);
+        List<Board> boards = jdbcTemplate.executeQueryList(sql, boardMapper, pageSize + 1, offset);
 
         if(boards.size() > pageSize) {
             return new Page<Board>(page, pageSize, true, boards);

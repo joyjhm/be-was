@@ -54,8 +54,9 @@ public class H2ConnectionManager implements ConnectionManager {
             """);
 
             stmt.execute("""
-                INSERT INTO BOARDS (user_id, content)
-                VALUES (1,  '테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다.')
+                INSERT INTO BOARDS (user_id, content, image_url)
+                        VALUES (1,  '테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다.', '../img/img.png');
+            
             """);
 
             logger.info("H2 schema initialized");

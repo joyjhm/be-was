@@ -11,7 +11,8 @@ public class BoardMapper implements Mapper<Board> {
         return new Board(
                 rs.getLong("board_id"),
                 rs.getLong("user_id"),
-                rs.getString("content")
+                rs.getString("content"),
+                rs.getString("image_url")
         );
     }
 }

@@ -42,6 +42,7 @@ public class BoardPageHandler implements ViewHandler {
         model.setAttribute("nextPage", boardPage.hasNext() ? String.valueOf(page + 1) : String.valueOf(page));
         model.setAttribute("content", board.content());
         model.setAttribute("writer", user.name());
+        model.setAttribute("boardImage", board.imagePath());
 
         HttpSession session = request.getSession();
 
