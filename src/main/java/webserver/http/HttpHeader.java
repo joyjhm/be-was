@@ -5,8 +5,8 @@ public enum HttpHeader {
     Content_LENGTH("Content-Length"),
     LOCATION("Location"),
     SET_COOKIE("Set-Cookie"),
-    COOKIE("Cookie");
-
+    COOKIE("Cookie"),
+    CONTENT_DISPOSITION("Content-Disposition");
     private String header;
     HttpHeader(String header) {
         this.header = header;
