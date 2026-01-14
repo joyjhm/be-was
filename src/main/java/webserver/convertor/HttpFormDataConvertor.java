@@ -22,7 +22,7 @@ public class HttpFormDataConvertor implements HttpMessageConvertor<HttpRequest> 
 
     @Override
     public void convert(HttpRequest httpRequest) {
-        for (String pair : httpRequest.getBody().split("&")) {
+        for (String pair : httpRequest.getBodyAsString().split("&")) {
             String[] kv = pair.split("=", 2);
             String key = kv[0];
             String value = kv.length > 1

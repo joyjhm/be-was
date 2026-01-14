@@ -11,12 +11,12 @@ public class HttpRequest {
 
     private final HttpRequestStartLine startLine;
     private final Map<String, String> headers;
-    private final String body;
-    private final Map<String, String> attributes = new HashMap<>();
+    private final byte[] body;
+    private final Map<String, Object> attributes = new HashMap<>();
     private HttpSession session;
 
 
-    HttpRequest(HttpRequestStartLine startLine, Map<String, String> headers, String body) {
+    HttpRequest(HttpRequestStartLine startLine, Map<String, String> headers, byte[] body) {
         this.startLine = startLine;
         this.headers = headers;
         this.body = body;
@@ -38,19 +38,23 @@ public class HttpRequest {
         return headers.get(key);
     }
 
-    public String getBody() {
+    public byte[] getBody() {
         return body;
+    }
+
+    public String getBodyAsString() {
+        return new String(body);
     }
 
     public HttpMethod getMethod() {
         return startLine.getMethod();
     }
 
-    public void setAttribute(String name, String value) {
+    public void setAttribute(String name, Object value) {
         attributes.put(name, value);
     }
 
-    public String getAttribute(String attributeName) {
+    public Object getAttribute(String attributeName) {
         return attributes.get(attributeName);
     }
 
