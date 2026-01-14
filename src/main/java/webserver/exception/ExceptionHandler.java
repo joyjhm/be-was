@@ -29,7 +29,7 @@ public class ExceptionHandler {
     }
 
     public HttpResponse httpExceptionHandle(HttpRequest request, HttpException e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
 
         int code = e.getHttpStatus().getCode();
         ResponseBody responseBody = resourceProvider.getResponseBody(EXCEPTION_PATH + "/" + code + ".html",
@@ -44,7 +44,7 @@ public class ExceptionHandler {
     }
 
     public HttpResponse globalExceptionHandle(HttpRequest request, Exception e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
 
         ResponseBody responseBody = resourceProvider.getResponseBody(
                 EXCEPTION_PATH + "/" + HttpStatus.INTERNAL_SERVER_ERROR.getCode() + ".html", new Model());
