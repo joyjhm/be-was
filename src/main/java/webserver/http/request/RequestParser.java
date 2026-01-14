@@ -1,10 +1,12 @@
 package webserver.http.request;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.BadRequestException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -16,17 +18,46 @@ import webserver.http.HttpHeader;
 public class RequestParser {
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
 
-    public HttpRequest parseHttpRequest(BufferedReader br) throws IOException {
-        // startLine 파싱
-        HttpRequestStartLine startLine = parseStartLine(br);
-        Map<String,String> headers = parseHeaders(br);
-        String body = parseBody(br, headers);
+    private static final String CRLF = "\r\n";
+    private static final byte[] HEADER_TERMINATOR = "\r\n\r\n".getBytes();
+
+    public HttpRequest parseHttpRequest(BufferedInputStream bin) throws IOException {
+        String headerStr = readHttpHeader(bin);
+
+        int idx = headerStr.indexOf(CRLF);
+        String startLineStr = headerStr.substring(0, idx).trim();
+        HttpRequestStartLine startLine = parseStartLine(startLineStr);
+
+        String header = headerStr.substring(idx + CRLF.length()).trim();
+        Map<String, String> headers = parseHeaders(header);
+        byte[] body = parseBody(bin, headers);
 
         return new HttpRequest(startLine, headers, body);
     }
 
-    private HttpRequestStartLine parseStartLine(BufferedReader br) throws IOException {
-        String startLine = br.readLine();
+    private String readHttpHeader(BufferedInputStream bin) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int matched = 0;
+        int read;
+
+        while ((read = bin.read()) != -1) {
+            byte b = (byte) read;
+            buffer.write(b);
+
+            if (b == HEADER_TERMINATOR[matched]) {
+                matched++;
+                if (matched == HEADER_TERMINATOR.length) {
+                    break;
+                }
+            } else {
+                matched = b == HEADER_TERMINATOR[0] ? 1 : 0;
+            }
+        }
+
+        return buffer.toString(StandardCharsets.ISO_8859_1);
+    }
+
+    private HttpRequestStartLine parseStartLine(String startLine) {
         String[] splitStartLine = startLine.split(" ");
 
         logger.info("request method : {}, request path : {}", splitStartLine[0], splitStartLine[1]);
@@ -37,25 +68,27 @@ public class RequestParser {
 
     }
 
-    private Map<String, String> parseHeaders(BufferedReader br) throws IOException {
-        String headerLine;
+    private Map<String, String> parseHeaders(String headerStr) {
         Map<String, String> headers = new HashMap<>();
-        while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
+
+        String[] token = headerStr.split("\r\n");
+
+        Arrays.stream(token).forEach(headerLine -> {
             int idx = headerLine.indexOf(':');
 
             if(idx == -1) {
                 throw new BadRequestException("invalid header");
             }
 
-            String key = headerLine.substring(0, idx).strip();
-            String value = headerLine.substring(idx + 1).strip();
+            String key = headerLine.substring(0, idx).trim();
+            String value = headerLine.substring(idx + 1).trim();
             headers.put(key.toLowerCase(), value);
-        }
+        });
+
         return headers;
     }
 
-    private String parseBody(BufferedReader br, Map<String,String> headers) throws IOException {
-        //TODO: Content-Length 없을 경우 고려
+    private byte[] parseBody(BufferedInputStream bin, Map<String,String> headers) throws IOException {
         String cl = headers.get(HttpHeader.Content_LENGTH.getHeader());
 
         if(cl == null) {
@@ -63,17 +96,17 @@ public class RequestParser {
         }
 
         int contentLength = Integer.parseInt(cl);
-        char[] body = new char[contentLength];
+        byte[] body = new byte[contentLength];
 
         int read = 0;
         while (read < contentLength) {
-            int r = br.read(body, read, contentLength - read);
+            int r = bin.read(body, read, contentLength - read);
             if (r == -1) {
-                break;
+                throw new EOFException();
             }
             read += r;
         }
-        return new String(body);
+        return body;
     }
 
     private RequestURL parseURL(String url) {
