@@ -22,9 +22,9 @@ public class HttpRequestParseTest {
                 "\r\n";
 
         InputStream in = new ByteArrayInputStream(rawRequest.getBytes(StandardCharsets.UTF_8));
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        BufferedInputStream bin = new BufferedInputStream(in);
 
-        HttpRequest request = requestParser.parseHttpRequest(br);
+        HttpRequest request = requestParser.parseHttpRequest(bin);
 
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/");
@@ -39,9 +39,9 @@ public class HttpRequestParseTest {
                 "\r\n";
 
         InputStream in = new ByteArrayInputStream(rawRequest.getBytes(StandardCharsets.UTF_8));
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        BufferedInputStream bin = new BufferedInputStream(in);
 
-        HttpRequest request = requestParser.parseHttpRequest(br);
+        HttpRequest request = requestParser.parseHttpRequest(bin);
 
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/user/create");
@@ -58,17 +58,17 @@ public class HttpRequestParseTest {
                 "POST /user/create HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-length: 69\r\n" +
+                "Content-length: 75\r\n" +
                 "\r\n" +
                 "userId=javajigi&password=password&name=박재성&email=javajigi@40slipp.net";
 
         InputStream in = new ByteArrayInputStream(rawRequest.getBytes(StandardCharsets.UTF_8));
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        BufferedInputStream bin = new BufferedInputStream(in);
 
-        HttpRequest request = requestParser.parseHttpRequest(br);
+        HttpRequest request = requestParser.parseHttpRequest(bin);
 
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getBody()).isEqualTo("userId=javajigi&password=password&name=박재성&email=javajigi@40slipp.net");
+        assertThat(request.getBodyAsString()).isEqualTo("userId=javajigi&password=password&name=박재성&email=javajigi@40slipp.net");
     }
 }
