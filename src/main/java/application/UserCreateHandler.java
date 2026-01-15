@@ -36,7 +36,7 @@ public class UserCreateHandler implements APIHandler {
 
         User findUser = userDatabase.findUserByUserId(userId).orElse(null);
 
-        if (findUser == null || findUser.name().equals(name)) {
+        if (findUser != null && findUser.name().equals(name)) {
            throw  new BadRequestException("이미 아이디와 이름이 같은 회원이 존재합니다.");
         }
 
