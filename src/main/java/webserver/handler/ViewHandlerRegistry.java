@@ -20,7 +20,7 @@ public class ViewHandlerRegistry {
         handlerMap.put(new RouteKey(HttpMethod.GET, "/"), new MainPageHandler(userDatabase, boardDatabase));
         handlerMap.put(new RouteKey(HttpMethod.GET,"/registration"), new RegistrationPageHandler());
         handlerMap.put(new RouteKey(HttpMethod.GET,"/login"), new LoginPageHandler());
-        handlerMap.put(new RouteKey(HttpMethod.GET,"/mypage"), new MyPageHandler());
+        handlerMap.put(new RouteKey(HttpMethod.GET,"/mypage"), new MyPageHandler(userDatabase));
         handlerMap.put(new RouteKey(HttpMethod.GET,"/article"), new PostPageHandler());
         handlerMap.put(new RouteKey(HttpMethod.GET,"/board"), new BoardPageHandler(userDatabase, boardDatabase));
     }

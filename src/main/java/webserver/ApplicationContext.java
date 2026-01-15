@@ -9,6 +9,7 @@ import db.UserDatabase;
 import db.UserH2Database;
 import webserver.convertor.ConvertorRegistry;
 import webserver.exception.ExceptionHandler;
+import webserver.filter.FilterRegistry;
 import webserver.handler.APIHandlerRegistry;
 import webserver.handler.ViewHandlerRegistry;
 import webserver.http.request.RequestParser;
@@ -46,6 +47,7 @@ public class ApplicationContext {
 
         ExceptionHandler exceptionHandler = new ExceptionHandler(resourceProvider);
 
+        FilterRegistry filterRegistry = new FilterRegistry();
         ResolverRegistry resolverRegistry = new ResolverRegistry();
         ConvertorRegistry convertorRegistry = new ConvertorRegistry();
 
@@ -55,6 +57,7 @@ public class ApplicationContext {
                         staticResourceHandler,
                         dynamicResourceHandler,
                         exceptionHandler,
+                        filterRegistry,
                         resolverRegistry,
                         convertorRegistry
                 );
