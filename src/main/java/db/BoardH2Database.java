@@ -1,5 +1,6 @@
 package db;
 
+import db.mapper.BoardMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,7 @@ public class BoardH2Database implements BoardDatabase {
     public void addBoard(Board board) {
         String sql = """
                     INSERT INTO BOARDS (user_id, content, image_url)
-                    VALUES (?, ?, ?)
+                    VALUES (?, ?, COALESCE(?, 'img/img.png'))
                 """;
 
         jdbcTemplate.executeUpdate(sql, board.userId(), board.content(), board.imagePath());
