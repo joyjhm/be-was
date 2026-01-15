@@ -1,7 +1,6 @@
 package application;
 
 import db.UserDatabase;
-import db.UserMemoryDatabase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +28,17 @@ public class UserCreateHandler implements APIHandler {
         String name = (String) request.getAttribute("name");
         String email = (String) request.getAttribute("email");
 
-        if (userId.isBlank() || password.isBlank() || name.isBlank() || email.isBlank()) {
-            throw new BadRequestException("Required fields are missing.");
-        }
+        validateFormData(userId, password, name, email);
 
-        User newUser = new User(
+        User newUser = User.of(
                 userId, password, name, email
         );
+
+        User findUser = userDatabase.findUserByUserId(userId).orElse(null);
+
+        if (findUser == null || findUser.name().equals(name)) {
+           throw  new BadRequestException("이미 아이디와 이름이 같은 회원이 존재합니다.");
+        }
 
         logger.info("New User: {}", newUser);
 
@@ -45,5 +48,15 @@ public class UserCreateHandler implements APIHandler {
                 statusLine(HttpStatus.FOUND).
                 header(HttpHeader.LOCATION, "/").
                 build();
+    }
+
+    private void validateFormData(String userId, String password, String name, String email) {
+        if (userId.isBlank() || password.isBlank() || name.isBlank() || email.isBlank()) {
+            throw new BadRequestException("필드의 빈 값이 들어갈 수 없습니다.");
+        }
+
+        if (userId.length() < 4 ||  password.length() < 4 || name.length() < 4 ||  email.length() < 4) {
+            throw new BadRequestException("필드 길이는 4자 이상이어야 합니다");
+        }
     }
 }
