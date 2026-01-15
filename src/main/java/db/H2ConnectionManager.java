@@ -30,8 +30,9 @@ public class H2ConnectionManager implements ConnectionManager {
                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
                             user_id VARCHAR(255) NOT NULL UNIQUE,
                             email VARCHAR(255) NOT NULL,
-                            name VARCHAR(255) NOT NULL,
-                            password VARCHAR(255) NOT NULL
+                            nickname VARCHAR(255) NOT NULL,
+                            password VARCHAR(255) NOT NULL,
+                            image_url VARCHAR(255) DEFAULT 'img/img.png'
                         )
                     """);
 
@@ -39,8 +40,8 @@ public class H2ConnectionManager implements ConnectionManager {
                         CREATE TABLE IF NOT EXISTS BOARDS (
                             board_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                             user_id BIGINT NOT NULL,
-                            content VARCHAR(500) NOT NULL,
-                            image_url VARCHAR(255),
+                            content VARCHAR(500) DEFAULT '',
+                            image_url VARCHAR(255) DEFAULT 'img/img.png',
                             CONSTRAINT fk_posts_user
                                 FOREIGN KEY (user_id)
                                 REFERENCES USERS(id)
@@ -49,13 +50,13 @@ public class H2ConnectionManager implements ConnectionManager {
                     """);
 
             stmt.execute("""
-                INSERT INTO USERS (user_id, password, name, email)
+                INSERT INTO USERS (user_id, password, nickname, email)
                 VALUES ('test', '1234', 'test', 'test@example.com')
             """);
 
             stmt.execute("""
-                INSERT INTO BOARDS (user_id, content, image_url)
-                        VALUES (1,  '테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다.', '../img/img.png');
+                INSERT INTO BOARDS (user_id, content)
+                        VALUES (1,  '테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다. 테스트 게시물 입니다.');
             
             """);
 
