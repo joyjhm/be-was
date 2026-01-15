@@ -6,14 +6,14 @@ import java.util.Optional;
 
 public enum ContentType {
 
-    HTML(Collections.singletonList("html"), "text/html;charset=utf-8"),
-    CSS(Collections.singletonList("css"), "text/css;charset=utf-8"),
-    JS(Collections.singletonList("js"), "application/javascript;charset=utf-8"),
-    ICO(Collections.singletonList("ico"), "image/x-icon"),
-    PNG(Collections.singletonList("png"), "image/png"),
-    JPG(Collections.singletonList("jpg, jpeg"), "image/jpeg"),
-    SVG(Collections.singletonList("svg"), "image/svg+xml"),
-    JSON(Collections.singletonList("json"), "application/json;charset=utf-8");
+    HTML(List.of("html"), "text/html;charset=utf-8"),
+    CSS(List.of("css"), "text/css;charset=utf-8"),
+    JS(List.of("js"), "application/javascript;charset=utf-8"),
+    ICO(List.of("ico"), "image/x-icon"),
+    PNG(List.of("png"), "image/png"),
+    JPG(List.of("jpg", "jpeg"), "image/jpeg"),
+    SVG(List.of("svg"), "image/svg+xml"),
+    JSON(List.of("json"), "application/json;charset=utf-8");
 
 
     private final List<String> extensions;
@@ -34,9 +34,9 @@ public enum ContentType {
     }
 
     private static Optional<ContentType> mimeTypeFromExtension(String ext) {
-
+        String normalized = ext.toLowerCase();
         for (ContentType t : values()) {
-            if (t.extensions.contains(ext)) {
+            if (t.extensions.contains(normalized)) {
                 return Optional.of(t);
             }
         }
