@@ -17,8 +17,6 @@ public class FileUtils {
         String decodedPath =
                 java.net.URLDecoder.decode(filePath, StandardCharsets.UTF_8);
 
-        logger.info("Trying to read resource from file: {}", decodedPath);
-
         try (FileInputStream fis = new FileInputStream(decodedPath);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 

@@ -107,9 +107,9 @@ public class MultipartFormDataConvertor implements HttpMessageConvertor<HttpRequ
         parts.forEach(part -> {
             int index = indexOfBytes(part, (CRLF + CRLF).getBytes(StandardCharsets.US_ASCII), 0);
             byte[] headerBytes = Arrays.copyOfRange(part, 0, index);
-            byte[] body = Arrays.copyOfRange(part, index + CRLF.length(), part.length);
+            byte[] body = Arrays.copyOfRange(part, index + CRLF.length() * 2, part.length);
             String headerText =
-                    new String(headerBytes, StandardCharsets.UTF_8);
+                    new String(headerBytes, StandardCharsets.ISO_8859_1);
 
             String[] headerLine = headerText.split(CRLF);
             Map<String, String> headers = new HashMap<>();
@@ -118,7 +118,7 @@ public class MultipartFormDataConvertor implements HttpMessageConvertor<HttpRequ
                 String[] token = s.split(":");
                 String key = token[0].trim().toLowerCase();
                 String value = token[1].trim();
-
+                logger.info("key: {}, value: {}", key, value);
                 headers.put(key.toLowerCase(), value);
             }
 
