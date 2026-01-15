@@ -31,9 +31,12 @@ public class ExceptionHandler {
     public HttpResponse httpExceptionHandle(HttpRequest request, HttpException e) {
         logger.error(e.getMessage(), e);
 
+
         int code = e.getHttpStatus().getCode();
+        Model model = new Model();
+        model.setAttribute("errorMessage", e.getMessage());
         ResponseBody responseBody = resourceProvider.getResponseBody(EXCEPTION_PATH + "/" + code + ".html",
-                new Model());
+                model);
 
         return new HttpResponseBuilder().statusLine(e.getHttpStatus())
                 .header(HttpHeader.CONTENT_TYPE, responseBody.getContentType().getMimeType())
