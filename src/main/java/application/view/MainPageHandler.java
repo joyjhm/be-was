@@ -43,15 +43,12 @@ public class MainPageHandler implements ViewHandler {
         model.setAttribute("previousPage", String.valueOf(1));
         model.setAttribute("nextPage", boardPage.hasNext() ? "2" : "1");
         model.setAttribute("boardImage", board.imagePath());
+        model.setAttribute("profile", user.imagePath());
 
         if (session == null) {
             return MAIN_PAGE_PATH;
         }
-
         String name = (String) session.getAttribute("name");
-        if (name == null) {
-            return MAIN_PAGE_PATH;
-        }
 
         model.setAttribute("name", name);
         return LOGGED_IN_MAIN_PAGE_PATH;
