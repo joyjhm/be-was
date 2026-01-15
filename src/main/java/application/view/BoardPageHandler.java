@@ -43,6 +43,7 @@ public class BoardPageHandler implements ViewHandler {
         model.setAttribute("content", board.content());
         model.setAttribute("writer", user.name());
         model.setAttribute("boardImage", board.imagePath());
+        model.setAttribute("profile", user.imagePath());
 
         HttpSession session = request.getSession();
 
