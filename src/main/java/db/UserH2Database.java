@@ -1,12 +1,7 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import db.mapper.UserMapper;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import model.User;
 import org.slf4j.Logger;
@@ -26,7 +21,7 @@ public class UserH2Database implements UserDatabase {
     @Override
     public void addUser(User user) {
         String sql = """
-                    INSERT INTO USERS (user_id, password, name, email)
+                    INSERT INTO USERS (user_id, password, nickname, email)
                     VALUES (?, ?, ?, ?)
                 """;
 
@@ -58,6 +53,15 @@ public class UserH2Database implements UserDatabase {
                 """;
 
         return jdbcTemplate.executeQueryList(sql, new UserMapper());
+    }
+
+    @Override
+    public void update(User user) {
+        String sql = """
+                    UPDATE USERS SET nickname = ?, password = ?, image_url = ? WHERE id = ?;
+                """;
+
+        jdbcTemplate.executeUpdate(sql, user.name(), user.password(), user.imagePath(), user.id());
     }
 
     @Override

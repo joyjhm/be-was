@@ -15,5 +15,7 @@ public interface UserDatabase {
 
     Collection<User> findAll();
 
+    void update(User user);
+
     void clear();
 }

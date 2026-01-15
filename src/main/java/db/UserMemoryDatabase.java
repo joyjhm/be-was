@@ -33,6 +33,11 @@ public class UserMemoryDatabase implements UserDatabase {
     }
 
     @Override
+    public void update(User user) {
+
+    }
+
+    @Override
     public void clear() {
         users.clear();
     }
