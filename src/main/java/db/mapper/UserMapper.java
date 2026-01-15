@@ -1,4 +1,4 @@
-package db;
+package db.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +12,9 @@ public class UserMapper implements Mapper<User> {
                 rs.getLong("id"),
                 rs.getString("user_id"),
                 rs.getString("password"),
-                rs.getString("name"),
-                rs.getString("email")
+                rs.getString("nickname"),
+                rs.getString("email"),
+                rs.getString("image_url")
         );
     }
 }
