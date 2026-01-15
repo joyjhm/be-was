@@ -14,9 +14,8 @@ public class LogoutHandler implements APIHandler {
     @Override
     public HttpResponse handle(HttpRequest request) {
         HttpSession session = request.getSession();
-        if(session != null) {
-            session.invalidate();
-        }
+        session.invalidate();
+
 
         Cookie cookie = new Cookie( "");
         cookie.setMaxAge(0);
