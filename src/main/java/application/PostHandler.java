@@ -1,6 +1,7 @@
 package application;
 
 import db.BoardDatabase;
+import java.util.UUID;
 import model.Board;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class PostHandler implements APIHandler {
 
     private final BoardDatabase boardDatabase;
     private static final String IMAGE_STORAGE_PATH = "./src/main/resources/static/img/";
-    private static final String IMAGE_URL_PREFIX = "../img/";
+    private static final String IMAGE_URL_PREFIX = "img/";
 
     public PostHandler(BoardDatabase boardDatabase) {
         this.boardDatabase = boardDatabase;
@@ -36,12 +37,12 @@ public class PostHandler implements APIHandler {
         MultiPartFormData content = (MultiPartFormData) request.getAttribute("content");
         MultiPartFormData file = (MultiPartFormData) request.getAttribute("file");
 
-        validateContent(content);
+        validateFormData(content, file);
 
         String imageUrl = null;
 
-        if (file != null && file.fileName() != null) {
-            String storedFileName = userId + "_" + file.fileName();
+        if (!file.fileName().trim().isBlank()) {
+            String storedFileName = UUID.randomUUID() + "_" + file.fileName();
             FileUtils.writeFile(IMAGE_STORAGE_PATH + storedFileName, file.body());
             imageUrl = IMAGE_URL_PREFIX + storedFileName;
         }
@@ -57,9 +58,12 @@ public class PostHandler implements APIHandler {
                 .build();
     }
 
-    private void validateContent(MultiPartFormData content) {
-        if (content == null || content.body() == null || content.body().length == 0) {
-            throw new BadRequestException("required content");
+    private void validateFormData(MultiPartFormData content, MultiPartFormData file) {
+        boolean hasContent = !content.getBodyAsString().trim().isBlank();
+        boolean hasFile = !file.fileName().trim().isBlank();
+
+        if (!hasContent && !hasFile) {
+            throw new BadRequestException("게시글 내용 또는 이미지는 반드시 하나 이상 있어야 합니다.");
         }
     }
 }
